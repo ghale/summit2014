@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath('com.terrafolio:gradle-jenkins-plugin:1.+')
+    }
+}
+
+allprojects { 
+    apply plugin: 'jenkins'
+
+    ext.projects = [:]
+    (1..10).collect { 
+        projects."project_${it}" = "git://someserver/project_${it}.git"
+    }
+
+    jenkins {
+        servers {
+            nonprod {
+                url 'http://localhost:8080'
+                secure false
+            }
+            prod {
+                url 'http://localhost:8081'
+                secure false
+            }
+        }
+
+        templates {
+            "build template" {
+                dsl {
+                    triggers {
+                        scm('H/10 * * * *')
+                    }
+                    steps {
+                        gradle('build')
+                    }
+                    publishers {
+                        extendedEmail('devs@acme.com', 'Job Failed!', 'This job failed!') {
+                            trigger('Failure')
+                            trigger('Fixed', 'Job Fixed!', 'This job is fixed now!')
+                        }
+                    }
+                }
+            }		
+            "deploy template" {
+                dsl {
+                    steps {
+                        gradle('deploy')
+                    }
+                    publishers {
+                        extendedEmail('devs@acme.com', 'Job Failed!', 'This job failed!') {
+                            trigger('Failure')
+                            trigger('Fixed', 'Job Fixed!', 'This job is fixed now!')
+                        }
+                    }
+                }
+            }		
+        }
+    }
+}

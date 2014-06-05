@@ -1,0 +1,29 @@
+ext.emailTemplate = { delegate ->
+        dsl {
+                publishers {
+                        extendedEmail('devs@acme.com', 'Job Failed!', 'This job failed!') {
+                                trigger('Failure')
+                                trigger('Fixed', 'Job Fixed!', 'This job is fixed now!')
+                        }
+                }
+        }
+}
+
+ext.buildTemplate = { delegate ->
+	dsl {
+                triggers {
+                        scm('H/10 * * * *')
+                }
+                steps {
+                        gradle('build')
+                }
+        }
+}
+
+ext.deployTemplate = { delegate ->
+	dsl {
+                steps {
+                        gradle('deploy')
+                }
+        }
+}

@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath('com.terrafolio:gradle-jenkins-plugin:1.+')
+    }
+}
+
+apply plugin: 'jenkins'
+
+jenkins {
+    // Server Definitions
+    servers {
+        demo {
+            url 'http://localhost:8080'
+            secure false
+        }
+    }
+
+    defaultServer servers.demo
+
+    // Job Definitions	
+    jobs {
+        "Demo Build" {
+            definition {
+                xml file('build_job.xml')
+            }
+        }
+    }
+}

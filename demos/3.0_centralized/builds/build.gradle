@@ -1,0 +1,21 @@
+apply plugin: 'jenkins'
+
+def branches = [ 'master', 'development' ]
+jenkins {
+    jobs {
+        projects.each { projectName, url ->
+            branches.each { branch ->
+                "${projectName}_build_${branch}" {
+                    server branch == 'master' ? servers.prod : servers.nonprod
+                    dsl {
+                        using 'build template'
+                        displayName "${projectName.capitalize()} ${branch} Build Job"
+                        scm {
+                            git(url, branch) 
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

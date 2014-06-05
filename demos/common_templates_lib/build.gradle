@@ -1,0 +1,13 @@
+apply plugin: 'groovy'
+
+version = '1.0.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile 'com.terrafolio:gradle-jenkins-plugin:1.+'
+}

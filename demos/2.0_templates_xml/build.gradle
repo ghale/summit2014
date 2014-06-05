@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath('com.terrafolio:gradle-jenkins-plugin:1.+')
+    }
+}
+
+apply plugin: 'jenkins'
+
+jenkins {
+    // server definitions
+    servers {
+        demo {
+            url 'http://localhost:8080'
+            secure false
+        }
+    }
+
+    defaultServer servers.demo
+
+    // template definitions
+    templates {
+        template_job {
+            xml file('build_job.xml')
+        }
+    }   
+
+    // job definitions	
+    jobs {
+        [ "build", "release" ].each { buildType ->
+            "build_${buildType}" {
+                definition {
+                    xml templates.template_job.override { projectXml ->
+                        projectXml.with {
+                            displayName = "Cool ${buildType} Job"
+                            description = "This is a ${buildType} job..."
+                            keepDependencies = 'true'						
+                        }   
+                    }
+                }
+            }
+        }
+    }
+}

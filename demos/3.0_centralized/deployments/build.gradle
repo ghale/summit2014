@@ -1,0 +1,26 @@
+apply plugin: 'jenkins'
+
+def tags = [ 'v1.0.0', 'v2.0.0' ]
+def environments = [ "test", "staging", "production" ]
+
+jenkins {
+    jobs {
+        projects.each { projectName, url ->
+            environments.each { environment ->
+                "${projectName}_deploy_${environment}" {
+                    server environment == 'production' ? servers.prod : servers.nonprod
+                    dsl {
+                        using 'deploy template'
+                        displayName "${environment.capitalize()} Deployment Job"
+                        parameters {
+                            choiceParam("RELEASE", tags)
+                        }
+                        scm {
+                            git(url, 'ref/tags/$RELEASE')
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
