@@ -40,7 +40,7 @@ jenkins {
             "build_${buildType}" {
                 dsl {
                     using 'template_job'
-                    displayName "${buildType.capitalize()} Job"
+                    displayName "Cool ${buildType.capitalize()} Job"
                     steps {
                         gradle(buildType)
                     }
