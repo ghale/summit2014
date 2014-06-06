@@ -11,13 +11,32 @@ jenkins {
                     server environment == 'production' ? servers.prod : servers.nonprod
                     dsl {
                         using 'deploy template'
-                        displayName "${environment.capitalize()} Deployment Job"
+                        displayName "${projectName.capitalize()} ${environment.capitalize()} Deployment Job"
                         parameters {
-                            choiceParam("RELEASE", tags)
+                            choiceParam("RELEASE", tags, 'The release to deploy')
                         }
                         scm {
                             git(url, 'ref/tags/$RELEASE')
                         }
+                    }
+                }
+            }
+        }
+    }
+    views {
+        environments.each { environment ->
+            "${environment.capitalize()} Deployments" {
+                server environment == 'production' ? servers.prod : servers.nonprod
+                dsl {
+                    jobs {
+                        regex(".*_deploy_${environment}")
+                    }
+                    columns {
+                        status()
+                        name()
+                        lastSuccess()
+                        lastFailure()
+                        buildButton()
                     }
                 }
             }

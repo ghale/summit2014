@@ -1,6 +1,6 @@
 apply plugin: 'jenkins'
 
-def branches = [ 'master', 'development' ]
+def branches = [ 'master', 'develop' ]
 jenkins {
     jobs {
         projects.each { projectName, url ->
@@ -13,6 +13,26 @@ jenkins {
                         scm {
                             git(url, branch) 
                         }
+                    }
+                }
+            }
+        }
+    }
+    views {
+        branches.each { branch ->
+            "${branch.capitalize()} Builds" {
+                server branch == 'master' ? servers.prod : servers.nonprod
+                
+                dsl {
+                    jobs {
+                        regex(".*_build_${branch}")
+                    }
+                    columns {
+                        status()
+                        name()
+                        lastSuccess()
+                        lastFailure()
+                        buildButton()
                     }
                 }
             }
