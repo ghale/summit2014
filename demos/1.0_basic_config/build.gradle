@@ -25,6 +25,7 @@ jenkins {
     jobs {
         "demo job" { 
             definition {
+                // configure and download this from jenkins
                 xml file('build_job.xml')
             }
         }
