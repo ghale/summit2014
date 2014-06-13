@@ -25,7 +25,7 @@ jenkins {
     templates {
         template_job {
             dsl {
-                description "Live demo...Please God, let it work"
+                description "This is a job derived from a template..."
                 displayName "Template Job"
                 steps {
                     shell 'echo "Gradle Rocks!"'
