@@ -23,7 +23,7 @@ jenkins {
 
     // Job Definitions	
     jobs {
-        "Demo Build" {
+        "demo job" { 
             definition {
                 xml file('build_job.xml')
             }

@@ -12,11 +12,12 @@ allprojects {
     apply plugin: 'jenkins'
 
     ext.projects = [:]
-    (1..10).collect { 
+    (1..100).each { 
         projects."project_${it}" = "git://someserver/project_${it}.git"
     }
 
     jenkins {
+        // Server Definitions
         servers {
             nonprod {
                 url 'http://localhost:8080'
@@ -27,7 +28,7 @@ allprojects {
                 secure false
             }
         }
-
+        // Template Definitions
         templates {
             "build template" {
                 dsl {
