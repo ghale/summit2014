@@ -7,23 +7,28 @@ buildscript {
 
     dependencies {
         classpath('com.terrafolio:gradle-jenkins-plugin:1.+')
+        // Common Template Jar
+        // This would normally come from a binary repository
         classpath files('../common_templates_lib/build/libs/common_templates_lib-1.0.0.jar')
     }
 }
 
 apply plugin: 'jenkins'
 
+def branches = [ "master", "develop" ]
 jenkins {
     use(CommonTemplates) {
+        // Common Build Server
         defaultBuildServer()
-            [ "master", "develop" ].each { branchName ->
-                gradleJob(
-                    name: "build_${project.name}_${branchName}",
-                    url: 'git://someserver/my_repo',
-                    branch: "${branchName}",
-                    poll: 10,
-                    tasks: 'build'
-                )
+        // Common Gradle Job Type
+        branches.each { branchName ->
+            gradleJob(
+                name: "build_${project.name}_${branchName}",
+                url: 'git://someserver/my_repo',
+                branch: "${branchName}",
+                poll: 10,
+                tasks: 'build'
+            )
         }
     }
 }
